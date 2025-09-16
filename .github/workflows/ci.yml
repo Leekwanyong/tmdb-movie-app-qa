@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+    push:
+        branches: ["dev", "main"]
+    pull_request:
+        branches: ["dev", "main"]
+
+jobs:
+    build-test-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            # 1. 레포 체크아웃
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            # 2. Node.js 세팅
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            # 3. 의존성 설치
+            - name: Install dependencies
+              run: npm install
+
+            # 4. ESLint 검사
+            - name: Run ESLint
+              run: npm run lint
+
+            # 5. Cypress 테스트 실행
+            - name: Run Cypress E2E tests
+              uses: cypress-io/github-action@v6
+              with:
+                  build: npm run build
+                  start: npm run preview
+                  wait-on: http://localhost:4173
+                  wait-on-timeout: 60
+
+            # 6. 빌드 (배포 확인용)
+            - name: Build project
+              run: npm run build
