@@ -19,11 +19,11 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: 18
+                  node-version: 20
 
             # 3. 의존성 설치
             - name: Install dependencies
-              run: npm install
+              run: npm install --include=dev
 
             # 4. ESLint 검사
             - name: Run ESLint
